@@ -24,4 +24,4 @@ for i in xrange(len(primes)):
 			ratio = float(n) / phiN
 			if ratio < minRatio:
 				bestN, minRatio = n, ratio
-				print bestN, phiN, minRatio
+print bestN, phiN, minRatio
