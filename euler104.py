@@ -1,16 +1,22 @@
-def isEndPandigital(n):
-	return ''.join(sorted(n[-9:])) == "123456789"
+from math import log10
 
-def isStartPandigital(n):
-	return ''.join(sorted(n[:9])) == "123456789"
+def isPandigital(n):
+	return sorted(n) == ['1','2','3','4','5','6','7','8','9']
 
-fib = [0,1,1]
+fib_1 = 1
+fib_2 = 1
 n = 3
 while True:
 	if n % 1000 == 0: print n
-	fib.append(fib[n-1] + fib[n-2])
-	currentStr = str(fib[n])
-	if len(currentStr) >= 9 and isEndPandigital(currentStr) and isStartPandigital(currentStr):
-		print n
-		break
+	current = fib_1 + fib_2
+	tail = current % 1000000000
+	if isPandigital(str(tail)):
+		length = 1 + int(log10(current))
+		if length > 9:
+			head = current / 10**(length-9)
+			if isPandigital(str(head)):
+				print n
+				break
+	fib_1 = fib_2
+	fib_2 = current
 	n+=1
