@@ -1,3 +1,22 @@
+limit = 10**7
+divisorCounts = [0] * limit
+
+def calculate(n):
+	for i in xrange(1, (n/2)+1):
+		for j in xrange(i*2, n, i):
+			divisorCounts[j] += 1
+
+calculate(limit)
+sum = 1
+count = 0
+for i in xrange(2, limit-1):
+	if divisorCounts[i] == divisorCounts[i+1]:
+		count+=1
+print count
+
+"""
+Attempt #2, took nearly an hour to run
+
 def getPrimesSieve(limit):
         notPrimes = [False] * limit
         primes = []
@@ -9,12 +28,15 @@ def getPrimesSieve(limit):
                 primes.append(i)
         return primes
 
+limit = 10**7
 primeFactorMap = {1:[]}
+primeFactorMap.fromkeys(xrange(limit))
 def getPrimeFactorization(n):
 	if n in primeFactorMap:
 		return primeFactorMap[n]
+	primeLimit = int(n**0.5)+1
 	for p in primes:
-		if p > int(n**0.5)+1:
+		if p > primeLimit:
 			break
 		if n % p == 0:
 			primeFactorMap[n] = [p] + getPrimeFactorization(n/p)
@@ -23,16 +45,12 @@ def getPrimeFactorization(n):
 	return [n]
 
 divisorCountMap = {1:0}
+divisorCountMap.fromkeys(xrange(limit))
 def getDivisorCount(n):
 	if n in divisorCountMap:
 		return divisorCountMap[n]
 	factors = getPrimeFactorization(n)
 	product = 1
-	"""
-	factorSet = set(factors)
-	for f in factorSet:
-		product *= (factors.count(f)+1)	
-	"""
 	current = 0
 	done = False
 	while not done:
@@ -51,23 +69,18 @@ def getDivisorCount(n):
 	divisorCountMap[n] = product
 	return product
 
-limit = 10**7
 primes = getPrimesSieve(limit)
 count = 0
 for n in xrange(1, limit):
 	if n % 10000 == 0: print n, count
 	if getDivisorCount(n) == getDivisorCount(n+1):
-		"""
-		print n, n+1
-		print count
-		print divisorCountMap
-		print primeFactorMap
-		print
-		"""
 		count +=1
 print count
+"""
 
 """
+Attempt #1
+
 divisorMap = {}
 def getDivisors(n):
 	if n in divisorMap:
