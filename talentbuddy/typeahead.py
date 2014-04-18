@@ -7,40 +7,38 @@ def typeahead(usernames, queries):
 	usernames = sorted(usernames, key = lambda u: u.lower())
 	users = map(lambda u: u.lower(), usernames)
 	for q in map(lambda q: q.lower(), queries):
-		highIndex = len(users)-1
-		lowIndex = 0
-		targetIndex = -1
-		while highIndex > lowIndex:
-			index = (highIndex + lowIndex) / 2
-			sub = users[index][0:len(q)]
-			highSub = users[highIndex][0:len(q)]
-			lowSub = users[lowIndex][0:len(q)]
-			if lowSub == q:
-				targetIndex = lowIndex
-				break
-			elif sub == q:
-				targetIndex = index
-				break
-			elif highSub == q:
-				targetIndex = highIndex
-				break
-			elif sub > q:
-				if highIndex == index:
-					break
-				highIndex = index
-			else:
-				if lowIndex == index:
-					break
-				lowIndex = index
+		targetIndex = binarySearch(q, users)
 		if targetIndex == -1:
 			print -1
 		else:
-			"""
 			index = targetIndex
-			while users[index][0:len(q)] == q: # TODO
-				index-=1 # TODO
-			print usernames[index+1]
-			"""
-			print usernames[targetIndex]
+			for diff in [2500, 1200, 600, 300, 150, 75, 40, 20, 10, 5, 2, 1]:
+				if diff > index:
+					continue
+				while users[index-diff][0:len(q)] == q:
+					index-=diff
+			print usernames[index]
+
+def binarySearch(find, sortedData):
+	highIndex = len(sortedData)-1
+	lowIndex = 0
+	while highIndex > lowIndex:
+		index = (highIndex + lowIndex) / 2
+		sub = sortedData[index][0:len(find)]
+		if sortedData[lowIndex][0:len(find)] == find:
+			return lowIndex
+		elif sub == find:
+			return index
+		elif sortedData[highIndex][0:len(find)] == find:
+			return highIndex
+		elif sub > find:
+			if highIndex == index:
+				return -1
+			highIndex = index
+		else:
+			if lowIndex == index:
+				return -1
+			lowIndex = index
+	return -1
 
 typeahead(usernames, queries)
