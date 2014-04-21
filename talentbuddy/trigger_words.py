@@ -5,13 +5,17 @@ from math import log
 
 def extract_trigger_words(contexts, m):
 	N = len(contexts)
-	tokens = set()
+	tokens = {}
 	idfs = {}
 	for context in contexts:
 		for token in context.split():
 			if token in tokens:
-				continue
-			idf = log(N / get_context_count(token, contexts))
+				tokens[token] += 1
+				for idf in idfs:
+					idfs[idf].discard(token)
+			else:
+				tokens[token] = 1
+			idf = log(N / tokens[token])
 			if idf not in idfs:
 				idfs[idf] = set([token])
 			else:
@@ -26,14 +30,5 @@ def extract_trigger_words(contexts, m):
 			bestTokens.append(token)
 	for token in bestTokens:
 		print token
-    
-def get_context_count(token, contexts):
-	count = 0
-	for context in contexts:
-		for cToken in context.split():
-			if cToken == token:
-				count+=1
-	return count
-
 
 extract_trigger_words(contexts, m)
