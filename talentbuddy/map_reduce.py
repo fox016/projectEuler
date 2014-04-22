@@ -15,19 +15,38 @@ def mod_exp(base, exp, mod):
 		base = (base * base) % mod
 	return result
 
-def hash_string(s, t):
-	hash_s = get_hash(s)
-	matches = 0
-	for i in xrange(len(t) - len(s) + 1):
-		if get_hash(t[i:i+len(s)]) == hash_s:
-			matches+=1
-	print matches
+mod = 104677
+mod_exp_table = []
 
-def get_hash(s):
+def hash_string(s, t):
+
+	global mod
+	global mod_exp_table
+	mod_exp_table = [pow(10, m, mod) for m in xrange(len(s))]
+
+	ord_table = map(ord, t)
+	hash_s = get_hash(s, map(ord, s))
+	print hash_s
+
+	matches = 0
+	for start in xrange(len(t) - len(s) + 1):
+		hash_t = get_hash(t[start:start+len(s)], ord_table[start:start+len(s)])
+		if start % 100 == 0: print start, hash_t
+		if hash_t == hash_s:
+			matches+=1
+			print "Matches:", matches, start
+	print "Total:", matches
+
+def get_hash(message, ord_table):
+	
+	global mod
+	global mod_exp_table
+
 	hash = 0
-	m = len(s)	
-	for i in xrange(1,m+1):
-		hash += (ord(s[i-1]) * (10**(m-i)))
+	m = len(message)
+	for i in xrange(1, m+1):
+		hash += ((ord_table[i-1] * mod_exp_table[m-i]) % mod)
+		hash = hash % mod
 	return hash
 
 hash_string(s, t)
