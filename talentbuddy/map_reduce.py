@@ -25,16 +25,23 @@ def hash_string(s, t):
 	mod_exp_table = [pow(10, m, mod) for m in xrange(len(s))]
 
 	hash_s = get_hash(s)
-	print hash_s
 
 	matches = 0
-	for start in xrange(len(t) - len(s) + 1):
-		hash_t = get_hash(t[start:start+len(s)])
-		if start % 100 == 0: print start, hash_t
-		if hash_t == hash_s:
-			matches+=1
-			print "Matches:", matches, start
-	print "Total:", matches
+	prev_index = 0
+	prev_hash = get_hash(t[0:len(s)])
+	if prev_hash == hash_s:
+		matches +=1
+	while prev_index < (len(t) - len(s)):
+		prev_hash -= (ord(t[prev_index]) * mod_exp_table[len(s)-1])
+		prev_hash *= 10
+		prev_hash %= mod
+		prev_hash += ord(t[prev_index+len(s)])
+		prev_hash %= mod
+		if prev_hash == hash_s:
+			matches += 1
+		prev_index += 1
+
+	print matches
 
 def get_hash(message):
 	

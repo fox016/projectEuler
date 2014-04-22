@@ -39,6 +39,7 @@ class Tree:
 def list_actors(data, bacon_number):
 	tree = Tree(Node("Kevin Bacon"))
 	build_tree(data, tree)
+#	tree.head.display()
 	for actor in sorted(map(lambda node: node.value, tree.getNodes(bacon_number, tree.head))):
 		print actor
 
