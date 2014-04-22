@@ -24,20 +24,19 @@ def hash_string(s, t):
 	global mod_exp_table
 	mod_exp_table = [pow(10, m, mod) for m in xrange(len(s))]
 
-	ord_table = map(ord, t)
-	hash_s = get_hash(s, map(ord, s))
+	hash_s = get_hash(s)
 	print hash_s
 
 	matches = 0
 	for start in xrange(len(t) - len(s) + 1):
-		hash_t = get_hash(t[start:start+len(s)], ord_table[start:start+len(s)])
+		hash_t = get_hash(t[start:start+len(s)])
 		if start % 100 == 0: print start, hash_t
 		if hash_t == hash_s:
 			matches+=1
 			print "Matches:", matches, start
 	print "Total:", matches
 
-def get_hash(message, ord_table):
+def get_hash(message):
 	
 	global mod
 	global mod_exp_table
@@ -45,7 +44,7 @@ def get_hash(message, ord_table):
 	hash = 0
 	m = len(message)
 	for i in xrange(1, m+1):
-		hash += ((ord_table[i-1] * mod_exp_table[m-i]) % mod)
+		hash += ((ord(message[i-1]) * mod_exp_table[m-i]) % mod)
 		hash = hash % mod
 	return hash
 
