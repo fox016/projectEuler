@@ -10,7 +10,6 @@ class Node:
 		self.value = value
 		self.edges = set()
 		self.dist = sys.maxint
-		self.visited = False
 
 	def addEdge(self, edge):
 		self.edges.add(edge)
@@ -55,25 +54,26 @@ class Graph:
 
 	def findClosestNode(self, val1, vals):
 		start = self.addNode(val1)
-		targetNodes = map(lambda val: self.addNode(val), vals)
 		start.dist = 0
 		queue = list(self.nodes.values())
+		queue = sorted(queue, key = lambda node: node.dist)
 		while queue:
-			queue = sorted(queue, key = lambda node: node.dist)
 			u = queue.pop(0)
 			if u.dist == sys.maxint:
 				break
+			shift = False
 			for edge in u.getEdges():
 				v = edge.node1
-				if v == u:
+				if v.value == u.value:
 					v = edge.node2
 				alt = u.dist + edge.weight
 				if alt < v.dist:
 					v.dist = alt
-			u.visited = True
-			if False not in map(lambda node: node.visited, targetNodes):
-				break
+					shift = True
+			if shift:
+				queue = sorted(queue, key = lambda node: node.dist)
 		best = {"index": -1, "dist": sys.maxint}
+		targetNodes = map(lambda val: self.addNode(val), vals)
 		for i in xrange(len(targetNodes)):
 			if targetNodes[i].dist < best['dist']:
 				best = {"index": i, "dist": targetNodes[i].dist}
