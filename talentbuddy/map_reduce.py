@@ -47,4 +47,38 @@ def get_hash(message):
 		hash = hash % mod
 	return hash
 
-hash_string(s, t)
+def has_match(value, value_hash, doc):
+
+	global mod
+	global mod_exp_table
+
+        prev_hash = get_hash(doc[0:len(value)])
+        if prev_hash == value_hash:
+		return True
+        for prev_index in xrange(len(doc) - len(value)):
+                prev_hash = ((prev_hash - (ord(doc[prev_index]) * mod_exp_table[len(value)-1])) * 10 + ord(doc[prev_index+len(value)])) % mod
+                if prev_hash == value_hash:
+			return True
+	return False
+
+def mr_map(search_strings, docs):
+
+	global mod
+	global mod_exp_table
+	mod_exp_table = [pow(10, m, mod) for m in xrange(200000)]
+
+	search_hashes = map(get_hash, search_strings)
+
+	for searchIndex in xrange(len(search_strings)):
+		indexList = []
+		for docIndex in xrange(len(docs)):
+			if has_match(search_strings[searchIndex], search_hashes[searchIndex], docs[docIndex]):
+				indexList.append(docIndex)
+		if not indexList:
+			print -1
+		else:
+			print ' '.join(map(str, indexList))
+
+searchStrings = ["cr", "fv", "ur", "az", "qx", "ja", "nh"]
+docs = ["hpqbjanfvxcrenhpuoqjpeztburqxszcetvxazduony", "xfvwtojhqnoscbmprswiyape", "dinwdurcxetjadazyertokofvqxpcrnnhux", "furcxpmcrkpwgiivqfvaznhcovyaqxjahyfkvtgjyy", "lhfzzdysfxfrkrsxxtdxcfpqb", "vfvfaotazwiggmjaqxwaurlanfgmcrtnhdb"]
+mr_map(searchStrings, docs)
