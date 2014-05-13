@@ -9,13 +9,11 @@ def rpn_eval(expr):
 	stack = []
 	num = ""
 	for i in xrange(len(expr)):
-		print stack
 		if expr[i] in " +-*/~":
 			if num != "":
 				stack.append(num)
 				num = ""
 		if expr[i] in "+-*/~":
-			print expr[i]
 			if expr[i] == "~":
 				stack.append(int(stack.pop()) * -1)
 			else:
