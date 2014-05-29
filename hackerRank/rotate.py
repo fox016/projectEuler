@@ -1,10 +1,16 @@
+import collections
+
+"""
 size = int(raw_input())
-nums = map(int, raw_input().split(" "))
+nums = collections.deque(map(int, raw_input().split(" ")))
+"""
+
+nums = collections.deque(range(10**4))
+
 best = 0
-for start in xrange(len(nums)):
-	total = 0
-	for add in xrange(len(nums)):
-		total += (nums[(start+add) % len(nums)] * (add+1))
+for i in xrange(len(nums)):
+	total = sum(map(lambda n, add: n*add, nums, xrange(1,len(nums)+1)))
 	if total > best:
 		best = total
+	nums.rotate(1)
 print best
