@@ -1,5 +1,57 @@
 import re
 
+# Valid long/lat pairs
+"""
+tests = int(raw_input())
+posRegex = "^\((\+|\-)?[1-9]\d*(\.\d+)?, (\+|\-)?[1-9]\d*(\.\d+)?\)$"
+for test in xrange(tests):
+        pos = raw_input()
+	x,y = map(float, pos.replace("(","").replace(")","").replace(" ","").replace("+","").split(","))
+        if re.search(posRegex, pos) and x >= -90 and x <= 90 and y >= -180 and y <= 180:
+                print "Valid"
+        else:
+                print "Invalid"
+"""
+
+# Hackerrank tweets
+"""
+tests = int(raw_input())
+regex = "hackerrank"
+count = 0
+for test in xrange(tests):
+	tweet = raw_input().lower()
+	if re.search(regex, tweet, re.IGNORECASE):
+		count+=1
+print count
+"""
+
+# Find hackerrank
+"""
+tests = int(raw_input())
+startRegex = "^hackerrank"
+endRegex = "hackerrank$"
+for test in xrange(tests):
+	message = raw_input()
+	if re.search(startRegex, message) and re.search(endRegex, message):
+		print 0
+	elif re.search(startRegex, message):
+		print 1
+	elif re.search(endRegex, message):
+		print 2
+	else:
+		print -1
+"""
+
+# Phone number split
+"""
+tests = int(raw_input())
+regex = "(\d{1,10})"
+for test in xrange(tests):
+	phone = raw_input()
+	parts = re.split(regex, phone)
+	print "CountryCode=" + parts[1] + ",LocalAreaCode=" + parts[3] + ",Number=" + parts[5]
+"""
+
 # Valid PAN format
 """
 tests = int(raw_input())
