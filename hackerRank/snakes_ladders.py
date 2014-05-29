@@ -30,13 +30,19 @@ class Graph:
 	def addEdge(self, sourceValue, sinkValue):
 		self.nodes[sourceValue].addSink(self.nodes[sinkValue])
 
-	def findDepth(self, value, current, depth): # DFS (TODO needs to be BFS)
-		if depth > 20: # TODO remove
-			return -1
-		if current.value == value:
-			return depth
-		for sink in current.getSinks():	
-			return self.findDepth(value, sink, depth+1)
+	def findDepth(self, value, start):
+		q = [(0, start)]
+		while q:
+			obj = q.pop(0)
+			depth = obj[0]
+			node = obj[1]
+			if node.value == value:
+				return depth
+			for sink in node.getSinks():
+				obj = (depth+1, sink)
+				if obj not in q:
+					q.append(obj)
+		return -1
 
 	def display(self):
 		print ""
@@ -73,12 +79,11 @@ def getBestPath(ladders, snakes):
 				graph.addEdge(n, n+x)
 	for edge in futureEdges:
 		graph.addEdge(edge[0], edge[1])
-	print graph.findDepth(100, graph.getNode(1), 0)
+	print graph.findDepth(100, graph.getNode(1))
 
 tests = int(raw_input())
 for test in xrange(tests):
 	ladderCount, snakeCount = map(int, raw_input().split(","))
 	ladders = map(lambda x: x.split(","), raw_input().split(" ")) # bottom-to-top
 	snakes = map(lambda x: x.split(","), raw_input().split(" ")) # mouth-to-tail
-	print "\n\n"
 	getBestPath(ladders, snakes)
