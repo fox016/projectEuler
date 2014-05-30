@@ -1,21 +1,134 @@
 import re
 
+# Java Comments
+"""
+source = ""
+while True:
+	try:
+		new = raw_input() + "\n"
+		if new == "COOL_BOB\n":
+			break
+		source += new
+	except EOFError:
+		break
+regex = "(//(.*)\n)|(/\*(.|\n)*?\*/)"
+comments = []
+match = re.search(regex, source)
+while match:
+	comments.append(match.group(0).strip())
+	match = re.search(regex, match.string[match.end():])
+for comment in comments:
+	for c in comment.split("\n"):
+		print c.strip()
+"""
+
+# Count Word Occurrences
+"""
+regex = "[a-zA-Z0-9_]+"
+lines = []
+for n in xrange(int(raw_input())):
+	tokens = []
+	match = re.search(regex, raw_input())
+	while match:
+		tokens.append(match.group(0))	
+		match = re.search(regex, match.string[match.end():])
+	lines.append(tokens)
+for t in xrange(int(raw_input())):
+	word = raw_input()
+	count = 0
+	for line in lines:
+		for token in line:
+			if word == token:
+				count+=1	
+	print count
+"""
+
+# Domain Names
+"""
+regex = "https?://(www\.|ww2\.)?(([a-zA-Z0-9\-]+\.)+[a-zA-Z0-9]{2,4})"
+domains = set()
+for n in xrange(int(raw_input())):
+        match = re.search(regex, raw_input().lower())
+        while match:
+                domains.add(match.group(2))
+                match = re.search(regex, match.string[match.end():])
+print ';'.join(sorted(domains))
+"""
+
+# Programming Language
+"""
+java_regex = ["import java(.*);", "public static void main", "System\.(out|exit)"]
+c_regex = ["#include<(.*)>", "int main()"]
+source = ""
+while True:
+	try:
+		new = raw_input()
+		if new == "COOL_BOB":
+			break
+		source += new
+	except EOFError:
+		break
+for java in java_regex:
+	if re.search(java, source):
+		print "Java"
+for c in c_regex:
+	if re.search(c, source):
+		print "C"
+print "Python"
+"""
+
+# Email Address
+"""
+regex = "[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,4}"
+emails = set()
+for n in xrange(int(raw_input())):
+	line = raw_input()
+	match = re.search(regex, line)
+	while match:
+		emails.add(match.group(0))
+		match = re.search(regex, match.string[match.end():])
+print ';'.join(sorted(emails))
+"""
+
+# Alternate Spellings 2
+"""
+lines = []
+for n in xrange(int(raw_input())):
+	lines.append(raw_input())
+for test in xrange(int(raw_input())):
+	english_word = raw_input()
+	american_word = english_word.replace("our", "or")
+	regex = "(^(" + american_word + "( |\n)|" + english_word + "( |\n)))|(( |\n)" + american_word + "( |\n)|( |\n)" + english_word + "( |\n))|((( |\n)" + american_word + "|( |\n)" + english_word + ")$)"
+	count = 0
+	match = re.search(regex, "\n".join(lines))
+	while match:
+		count+=1
+		match = re.search(regex, match.string[match.end():])
+	print count
+"""
+
+# Alien Username
+"""
+regex = "^(_|\.)[0-9]+([a-zA-Z]*_?)$"
+for test in xrange(int(raw_input())):
+	if re.search(regex, raw_input()):
+		print "VALID"
+	else:
+		print "INVALID"
+"""
+
 # HTML Tags
-open_tag_regex = "<[^/][^>]*>"
-open_list = []
+"""
+tag_regex = "^<[^(>| )]*(>| )"
+tag_names = set()
 for test in xrange(int(raw_input())):
 	html = raw_input()
-	match = re.search(open_tag_regex, html)
+	match = re.search(tag_regex, html)
 	while match:
-		open_list.append(match.group(0))
-		match = re.search(open_tag_regex, match.string[match.end():])
-
-tag_name_regex = "^<[^(>| )]*"
-tag_names = set()
-for tag in open_list:
-	match = re.search(tag_name_regex, tag)
-	tag_names.add(match.group(0)[1:])
+		tag_names.add(match.group(0)[1:-1])
+		match = re.search(tag_regex, match.string[match.end():])
 print ';'.join(sorted(tag_names))
+"""
 
 # Find Enclosed Substrings
 """
