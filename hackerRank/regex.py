@@ -1,5 +1,18 @@
 import re
 
+# HTML Links
+"""
+regex = "<a href=(\"|')(.*?)(\"|').*?>(<.*?>)*(.*?)(<.*?>)*</a>"
+links = []
+for n in xrange(int(raw_input())):
+	match = re.search(regex, raw_input())
+	while match:
+		links.append(match.group(2,5))
+		match = re.search(regex, match.string[match.end():])
+for link in links:
+	print link[0] + ',' + link[1].strip()
+"""
+
 # Java Comments
 """
 source = ""
