@@ -10,11 +10,23 @@ def streets_nearby(segments, circles):
 				count += 1
 		print count
 
-def does_contain_line(circle, end1, end2, iter=1):
-	mid = ((end1[0] + end2[0]) / 2.0, (end1[1] + end2[1]) / 2.0)
-	if iter == 20:
-		return does_contain_point(circle, end1) or does_contain_point(circle, end2) or does_contain_point(circle, mid)
-	return does_contain_line(circle, end1, mid, iter+1) or does_contain_line(circle, mid, end2, iter+1)
+def does_contain_line(circle, end1, end2):
+	closest_point = get_closest_point(circle, end1, end2)
+	return does_contain_point(circle, closest_point)
+
+def get_closest_point(circle, end1, end2):
+	center = map(float, circle.split(","))[0:2]
+	seg_v = (end2[0] - end1[0], end2[1] - end1[1])
+	seg_v_mag = get_dist(end1, end2)
+	pt_v = (center[0] - end1[0], center[1] - end1[1])
+	unit_seg_v = map(lambda x:x/seg_v_mag, seg_v)
+	proj_v = (pt_v[0] * unit_seg_v[0]) + (pt_v[1] * unit_seg_v[1])
+	if proj_v < 0:
+		return end1
+	if proj_v > seg_v_mag:
+		return end2
+	proj_vec = map(lambda x:x*proj_v, unit_seg_v)
+	return ((end1[0]+proj_vec[0]), (end1[1]+proj_vec[1]))
 
 def does_contain_point(circle, p):
 	data = map(float, circle.split(","))
