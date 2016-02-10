@@ -1,9 +1,10 @@
 import math
 
 #LIMIT = 1000000000
-LIMIT = 10000
+LIMIT = 1000000000
 A = 0.75
 B = 0.5
+SOLUTION = 0
 
 def is_square(num):
 	root = long(math.sqrt(num))
@@ -35,22 +36,31 @@ print solution
 def solve_quad(a, b, c):
 	root = b**2 - (4*a*c)
 	if root < 0:
-		return None, None
-	return (-1*b + math.sqrt(root)) / (2*a), (-1*b - math.sqrt(root)) / (2*a)
+		return
+	solutions = (-1*b + math.sqrt(root)) / (2*a), (-1*b - math.sqrt(root)) / (2*a)
+	return get_solution_perimeter(solutions[0], b), get_solution_perimeter(solutions[1], b)
 
-def is_int(x):
-	if x is None:
-		return False
-	return x == round(x)
+def get_solution_perimeter(x, b):
+	if x is None or x < 0 or x != round(x) or not is_odd(x):
+		return 0
+	if b > 0:
+		perimeter = 3*x-1
+		if perimeter < LIMIT:
+			print x, x-1, perimeter, SOLUTION+perimeter
+			return perimeter
+		return 0
+	perimeter = 3*x+1
+	if perimeter < LIMIT:
+		print x, x+1, perimeter, SOLUTION+perimeter
+		return perimeter
+	return 0
 
-def print_ints(x1,x2,x3,x4):
-	if is_int(x1): print x1
-	if is_int(x2): print x2
-	if is_int(x3): print x3
-	if is_int(x4): print x4
-
-for i in xrange(((LIMIT/3)+3)**2):
+for i in xrange(3, ((LIMIT+1)/3)+1):
 	square = i**2
-	x1,x2 = solve_quad(A, B, 0.25 - square)
-	x3,x4 = solve_quad(A, -1*B, 0.25 - square)
-	print_ints(x1,x2,x3,x4)
+	sol1 = solve_quad(A, B, -0.25 - square)
+	sol2 = solve_quad(A, -1*B, -0.25 - square)
+	SOLUTION += sol1[0]
+	SOLUTION += sol1[1]
+	SOLUTION += sol2[0]
+	SOLUTION += sol2[1]
+print SOLUTION
