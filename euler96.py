@@ -6,32 +6,32 @@ class Cell:
 		self.square = square
 		self.value = value
 		if value == 0:
-			self.possibleValues = [True] * Board.size
+			self.possible_values = [True] * Board.size
 		else:
-			self.possibleValues = [False] * Board.size
-			self.possibleValues[value-1] = True
+			self.possible_values = [False] * Board.size
+			self.possible_values[value-1] = True
 
 	def copy(self):
-		newCell = Cell(self.row, self.col, self.square, self.value)
-		newCell.possibleValues = list(self.possibleValues)
-		return newCell
+		new_cell = Cell(self.row, self.col, self.square, self.value)
+		new_cell.possible_values = list(self.possible_values)
+		return new_cell
 
-	def removePossibleValue(self, value):
+	def remove_possible_values(self, value):
 		if self.value != 0:
 			return False
 		if value == 0:
 			return False
-		self.possibleValues[value-1] = False
-		if self.possibleValues.count(True) == 1:
-			self.value = self.possibleValues.index(True) + 1
+		self.possible_values[value-1] = False
+		if self.possible_values.count(True) == 1:
+			self.value = self.possible_values.index(True) + 1
 			return True
-		if self.possibleValues.count(True) == 0:
+		if self.possible_values.count(True) == 0:
 			raise Exception("All values false at [" + self.row + "," + self.col + "]")
 		return False
 
-	def getPossibleValues(self):
+	def get_possible_values(self):
 		possible = []
-		for index, value in enumerate(self.possibleValues):
+		for index, value in enumerate(self.possible_values):
 			if value == True:
 				possible.append(index+1)
 		return possible
@@ -44,16 +44,16 @@ class Board:
 		self.cells = [[None for x in xrange(Board.size)] for x in xrange(Board.size)]
 		for row in xrange(Board.size):
 			for col in xrange(Board.size):
-				self.cells[row][col] = Cell(row, col, Board.getSquare(row, col), values[row][col])
+				self.cells[row][col] = Cell(row, col, Board.get_square(row, col), values[row][col])
 
 	def copy(self):
-		newBoard = Board([[0 for x in xrange(Board.size)] for x in xrange(Board.size)])
+		new_board = Board([[0 for x in xrange(Board.size)] for x in xrange(Board.size)])
 		for row in xrange(Board.size):
 			for col in xrange(Board.size):
-				newBoard.cells[row][col] = self.cells[row][col].copy()
-		return newBoard
+				new_board.cells[row][col] = self.cells[row][col].copy()
+		return new_board
 
-	def displayBoard(self):
+	def display_board(self):
 		for row in xrange(Board.size):
 			line = ""
 			for col in xrange(Board.size):
@@ -64,125 +64,125 @@ class Board:
 	def solve(self):
 		for row in xrange(Board.size):
 			for col in xrange(Board.size):
-				self.setInitPossibleValues(self.cells[row][col])
-		first = self.getFirstUnknown()
+				self.set_init_possible_values(self.cells[row][col])
+		first = self.get_first_unknown()
 		if first != None:
-			for possibleValue in first.getPossibleValues():
-				self.guess(self, first, possibleValue)
+			for possible_value in first.get_possible_values():
+				self.guess(self, first, possible_value)
 		else:
 			self.guess(self, first, -1)
 
-	def isValid(self):
+	def is_valid(self):
 		for row in xrange(Board.size):
 			for x in xrange(3):
-				if x == 0: cells = self.getRowCells(row)
-				elif x == 1: cells = self.getColCells(row)
-				else: cells = self.getSquareCells(row)
+				if x == 0: cells = self.get_row_cells(row)
+				elif x == 1: cells = self.get_col_cells(row)
+				else: cells = self.get_square_cells(row)
 				for i in xrange(len(cells)):
 					for j in xrange(i+1, len(cells)):
 						if(cells[i].value == cells[j].value):
 							return False
 		return True
 
-	def getRowCells(self, index):
+	def get_row_cells(self, index):
 		return self.cells[index]
 
-	def getColCells(self, index):
+	def get_col_cells(self, index):
 		col = []
 		for row in xrange(Board.size):
 			col.append(self.cells[row][index])
 		return col
 
-	def getSquareCells(self, index):
+	def get_square_cells(self, index):
 		square = []
 		count = 0
 		for row in xrange(Board.size):
 			for col in xrange(Board.size):
-				if self.getSquare(row, col) == index:
+				if self.get_square(row, col) == index:
 					square.append(self.cells[row][col])
 					count+=1
 					if count == 9:
 						return square
 		return square
 
-	def guess(self, board, cell, newValue):
+	def guess(self, board, cell, new_value):
 		if cell == None:
-			if board.isValid():
-				board.displayBoard()
-				self.solutionNumber = int(str(board.cells[0][0].value) + str(board.cells[0][1].value) + str(board.cells[0][2].value))
+			if board.is_valid():
+				board.display_board()
+				self.solution_number = int(str(board.cells[0][0].value) + str(board.cells[0][1].value) + str(board.cells[0][2].value))
 			return
-		newBoard = board.copy()
-		newCell = newBoard.cells[cell.row][cell.col]
-		newCell.value = newValue
+		new_board = board.copy()
+		new_cell = new_board.cells[cell.row][cell.col]
+		new_cell.value = new_value
 		try:
-			newBoard.updateRow(newCell.row, newValue)
-			newBoard.updateColumn(newCell.col, newValue)
-			newBoard.updateSquare(newCell.square, newValue)
+			new_board.update_row(new_cell.row, new_value)
+			new_board.update_column(new_cell.col, new_value)
+			new_board.update_square(new_cell.square, new_value)
 		except Exception, e:
 			return
 
-		first = newBoard.getFirstUnknown()
+		first = new_board.get_first_unknown()
 		if first != None:
-			for possibleValue in first.getPossibleValues():
-				self.guess(newBoard, first, possibleValue)
+			for possible_value in first.get_possible_values():
+				self.guess(new_board, first, possible_value)
 		else:
-			self.guess(newBoard, first, -1)
+			self.guess(new_board, first, -1)
 
-	def getFirstUnknown(self):
+	def get_first_unknown(self):
 		for row in xrange(Board.size):
 			for col in xrange(Board.size):
 				if self.cells[row][col].value == 0:
 					return self.cells[row][col]
 		return None
 
-	def setInitPossibleValues(self, cell):
+	def set_init_possible_values(self, cell):
 		if cell.value != 0:
 			return
 		update = False
 		for col in xrange(Board.size):
-			if cell.removePossibleValue(self.cells[cell.row][col].value):
+			if cell.remove_possible_values(self.cells[cell.row][col].value):
 				update = True
 		for row in xrange(Board.size):
-			if cell.removePossibleValue(self.cells[row][cell.col].value):
+			if cell.remove_possible_values(self.cells[row][cell.col].value):
 				update = True
 		for row in xrange(Board.size):
 			for col in xrange(Board.size):
 				if self.cells[row][col].square == cell.square:
-					if cell.removePossibleValue(self.cells[row][col].value):
+					if cell.remove_possible_values(self.cells[row][col].value):
 						update = True
 		if update:
-			self.updateRow(cell.row, cell.value)
-			self.updateColumn(cell.col, cell.value)
-			self.updateSquare(cell.square, cell.value)
+			self.update_row(cell.row, cell.value)
+			self.update_column(cell.col, cell.value)
+			self.update_square(cell.square, cell.value)
 
-	def updateRow(self, row, value):
+	def update_row(self, row, value):
 		for col in xrange(Board.size):
-			if self.cells[row][col].removePossibleValue(value):
-				self.updateRow(row, self.cells[row][col].value)
-				self.updateColumn(col, self.cells[row][col].value)
-				self.updateSquare(self.cells[row][col].square, self.cells[row][col].value)
+			if self.cells[row][col].remove_possible_values(value):
+				self.update_row(row, self.cells[row][col].value)
+				self.update_column(col, self.cells[row][col].value)
+				self.update_square(self.cells[row][col].square, self.cells[row][col].value)
 
-	def updateColumn(self, col, value):
+	def update_column(self, col, value):
 		for row in xrange(Board.size):
-			if self.cells[row][col].removePossibleValue(value):
-				self.updateRow(row, self.cells[row][col].value)
-				self.updateColumn(col, self.cells[row][col].value)
-				self.updateSquare(self.cells[row][col].square, self.cells[row][col].value)
+			if self.cells[row][col].remove_possible_values(value):
+				self.update_row(row, self.cells[row][col].value)
+				self.update_column(col, self.cells[row][col].value)
+				self.update_square(self.cells[row][col].square, self.cells[row][col].value)
 
-	def updateSquare(self, square, value):
+	def update_square(self, square, value):
 		for row in xrange(Board.size):
 			for col in xrange(Board.size):
 				if self.cells[row][col].square == square:
-					if self.cells[row][col].removePossibleValue(value):
-						self.updateRow(row, self.cells[row][col].value)
-						self.updateColumn(col, self.cells[row][col].value)
-						self.updateSquare(self.cells[row][col].square, self.cells[row][col].value)
+					if self.cells[row][col].remove_possible_values(value):
+						self.update_row(row, self.cells[row][col].value)
+						self.update_column(col, self.cells[row][col].value)
+						self.update_square(self.cells[row][col].square, self.cells[row][col].value)
 
-	def getSolutionNumber(self):
-		return self.solutionNumber
+	def get_solution_number(self):
+		return self.solution_number
 
 	@staticmethod
-	def getSquare(row, col):
+	def get_square(row, col):
 		if row < 3:
 			if col < 3: return 0
 			if col < 6: return 1
@@ -202,11 +202,11 @@ for line in open('files/96.dat'):
 		if len(values) != 0:
 			board = Board(values)
 			board.solve()	
-			total += board.getSolutionNumber()
+			total += board.get_solution_number()
 		values = []
 		continue
 	values.append(map(int, line.strip()))
 board = Board(values)
 board.solve()	
-total += board.getSolutionNumber()
+total += board.get_solution_number()
 print total
