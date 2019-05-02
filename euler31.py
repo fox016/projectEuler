@@ -5,4 +5,5 @@ for value in values:
     for i in range(value, target+1):
         table[i] += table[i - value]
 
+print table
 print table[target]
