@@ -17,7 +17,7 @@ def choose(n, k):
   
 # sieve of Eratosthenes
 # make it so sieve[i] is smallest prime factor of i
-prime_limit = 162000
+prime_limit = 184756
 sieve = list()
 def fill_sieve(upper):
   global sieve
@@ -63,30 +63,18 @@ def B(n):
   return int(reduce(lambda x, y: x*y, choose_results + choose_results, 1))
 """
 
-"""
-# D(n) is the sum of all divisors of B(n) (sum_of_divisors, sum_of_factors, sum_factors)
-def D(n):
-  print "Calculate D(", n, ")"
-  total = 1
-  factors = get_prime_factors_and_powers(B(n))
-  for prime in factors:
-    power = factors[prime]
-    total *= (prime**(power+1) - 1) // (prime - 1)
-  return total
-"""
-
 # B(n) is product of all (n choose k) from k=0 to k=n
 # This returns list of numbers multiplied together to get B(n)
 def get_n_choose_k_parts(n):
-  parts = []
+  parts = [1]
   for i in xrange(1, n//2 + 1):
     parts.append(int(choose(n, i)))
   return parts
 
 # Get all prime factors for B(n) parts (and thus for B(n))
-def get_prime_factors(n):
+def get_prime_factors_powers_b(n):
   parts = get_n_choose_k_parts(n)
-  factors = []
+  factor_power_map = {}
   if n & 1 == 0:
     parts = parts + parts[:-1]
   else:
@@ -95,39 +83,27 @@ def get_prime_factors(n):
   for part in parts:
     pfs = get_prime_factors_and_powers(part)
     for pf in pfs:
-      for i in xrange(pfs[pf]):
-        factors.append(pf)
-  return factors
+      if pf in factor_power_map:
+        factor_power_map[pf] += pfs[pf]
+      else:
+        factor_power_map[pf] = pfs[pf]
+  return factor_power_map
 
-# Get sum of all divisors given prime factorization 
-def get_sum_of_divisors(n):
-  pass # TODO see other TODO comments
-  # Get n choose k parts
-  # For each part, get prime factors and powers
-  # Have one object where keys are prime factors and values are all powers of that factor summed up (to get prime factors/powers for B(n))
-  # TODO In general, if you have the prime factorization of the number n, then to calculate the sum of its divisors, you take each different prime factor and add together all its powers up to the one that appears in the prime factorization, and then multiply all these sums together! (From https://www.math.upenn.edu/~deturck/m170/wk3/lecture/sumdiv.html)
-
-# Get all divisors by prime factors
-def get_all_divisors(pfs):
-  divisors = set()
-  divisors.add(1)
-  for length in xrange(1, len(pfs)+1):
-    print "length:", length
-    for p in combinations(pfs, length): # TODO problem is too many combinations once you get up to D(8), need a better way of calculating all divisors from prime factors
-      divisors.add(reduce(lambda x, y: x*y, p, 1))
-  return divisors
-
-
+# Get sum of all divisors for B(n) after calculating prime factorization 
 # D(n) is the sum of all divisors of B(n) (sum_of_divisors, sum_of_factors, sum_factors)
 # B(n) is product of all (n choose k) from k=0 to k=n
+# In general, if you have the prime factorization of the number n, then to calculate the sum of its divisors, you take each different prime factor and add together all its powers up to the one that appears in the prime factorization, and then multiply all these sums together! (From https://www.math.upenn.edu/~deturck/m170/wk3/lecture/sumdiv.html)
+# S(p^k) = 1 + p + p^2 + . . . + p^k = (p^(k+1) - 1) / (p-1) .
 def D(n):
   print "Calculate D(", n, ")"
-  pfs = get_prime_factors(n)
-  print "prime factors:", pfs
-  divisors = get_all_divisors(pfs)
-  print "divisors:", divisors
-  print "div sum: ", sum(divisors)
-  return sum(divisors)
+  # Get prime factors and powers for B(n)
+  pfs = get_prime_factors_powers_b(n)
+  print pfs
+  div_sum = 1
+  for pf in pfs:
+    div_sum *= int((pf**(pfs[pf]+1) - 1) / (pf -1))
+  print "div_sum:", div_sum
+  return div_sum
 
 # S(n) is the sum of all D(k) from k=1 to k=n
 def S(n):
@@ -137,3 +113,5 @@ def S(n):
 #print S(5)
 #print S(6)
 print S(10)
+#print S(20)
+#print S(20000)
