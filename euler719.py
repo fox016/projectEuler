@@ -1,4 +1,5 @@
 import math
+from functools import reduce
 
 def get_squares(start=16, end=10001):
     base = math.floor(math.sqrt(start))
@@ -13,32 +14,21 @@ def get_squares(start=16, end=10001):
 def is_s_num(square, base):
     if square < 10:
         return False
-    perms = get_digit_permutations(square)
-    for perm in perms:
-        if sum(perm) == base:
-            print(square, perm, base)
-            return True
-    return False
+    return s_num_helper("", str(square), base)
 
-def get_digit_permutations(num):
-    digits = str(num)
-    solution = []
-    perm_helper("", digits, solution)
-    return list(map(lambda x: list(map(int, x.split(" "))), solution))[:-1]
-
-def perm_helper(so_far, remaining, solution):
+def s_num_helper(so_far, remaining, base):
     if remaining == "":
-        solution.append(so_far)
-        return
+        if sum(map(int, so_far.split(" "))) == base:
+            print(so_far, base)
+            return True
+        return False
     next_char = remaining[0]
     remaining = remaining[1:]
     if so_far != "":
-        perm_helper(so_far + " " + next_char, remaining, solution)
-    perm_helper(so_far + next_char, remaining, solution)
+        if s_num_helper(so_far + " " + next_char, remaining, base):
+            return True
+    return s_num_helper(so_far + next_char, remaining, base)
 
-total = 0
+
 squares = get_squares(16, 10**12+1)
-for base in squares:
-    if is_s_num(squares[base], base):
-        total += squares[base]
-print(total)
+print(reduce(lambda y, z: squares[y] + squares[z], list(filter(lambda x: is_s_num(squares[x], x), squares.keys())), 1))
